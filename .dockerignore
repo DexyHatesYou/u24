@@ -1,0 +1,10 @@
+.git
+.gitignore
+.dockerignore
+node_modules
+npm-debug.log
+README.md
+assets/scss/
+*.sqlite
+database/books.db
+example_data.json

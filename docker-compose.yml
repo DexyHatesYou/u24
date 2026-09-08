@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookshelf_app
+    # Maps port 8000 on your host machine to port 80 inside the Docker container
+    ports:
+      - "8000:80"
+    volumes:
+      # Use a named volume for the database to ensure SQLite data persists across container restarts/rebuilds
+      - bookshelf_db:/var/www/html/database
+    restart: unless-stopped
+
+volumes:
+  bookshelf_db:
