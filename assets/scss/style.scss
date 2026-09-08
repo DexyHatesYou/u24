@@ -806,6 +806,186 @@ table {
 }
 
 
+
+// ═══════════════════════════════════════════════════════════════════
+//  NAV — USER INDICATOR & LOGOUT
+// ═══════════════════════════════════════════════════════════════════
+
+.nav-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: $font-size-sm;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding: 6px 10px;
+
+    svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.nav-link--logout {
+    color: var(--danger) !important;
+    opacity: 0.7;
+
+    &:hover {
+        opacity: 1;
+        background: rgba(239, 95, 95, 0.08) !important;
+    }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  LOGIN PAGE
+// ═══════════════════════════════════════════════════════════════════
+
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-lg;
+}
+
+.login-card {
+    width: 100%;
+    padding: $space-2xl !important;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: $space-2xl;
+
+    > svg,
+    > i {
+        width: 40px;
+        height: 40px;
+        color: var(--accent);
+        margin-bottom: $space-md;
+    }
+
+    h1 {
+        font-size: $font-size-xl;
+        font-weight: 700;
+        margin-bottom: $space-xs;
+    }
+
+    p {
+        font-size: $font-size-sm;
+        color: var(--text-secondary);
+    }
+}
+
+.login-submit {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    margin-top: $space-sm;
+}
+
+.login-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: $font-size-sm;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    &:hover {
+        color: var(--accent);
+    }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  ADMIN PANEL
+// ═══════════════════════════════════════════════════════════════════
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: $space-md;
+    margin-bottom: $space-2xl;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+    padding: $space-lg $space-xl;
+
+    > svg,
+    > i {
+        width: 32px;
+        height: 32px;
+        color: var(--accent);
+        flex-shrink: 0;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__value {
+        font-size: $font-size-xl;
+        font-weight: 700;
+    }
+
+    &__label {
+        font-size: $font-size-xs;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+}
+
+.admin-sections {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-lg;
+}
+
+.admin-section {
+    padding: $space-xl;
+
+    &__title {
+        display: flex;
+        align-items: center;
+        gap: $space-sm;
+        font-size: $font-size-lg;
+        font-weight: 600;
+        margin-bottom: $space-sm;
+
+        svg, i {
+            width: 20px;
+            height: 20px;
+            color: var(--accent);
+        }
+    }
+
+    &__desc {
+        font-size: $font-size-sm;
+        color: var(--text-secondary);
+    }
+}
+
+
 // ═══════════════════════════════════════════════════════════════════
 //  PRINT STYLES
 // ═══════════════════════════════════════════════════════════════════

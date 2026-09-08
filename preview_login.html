@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — BookShelf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        (function() {
+            var t = localStorage.getItem('bookshelf-theme');
+            if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        })();
+    </script>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <header class="site-header">
+        <a href="preview.html" class="logo">
+            <i data-lucide="book-marked"></i>
+            Book<span>Shelf</span>
+        </a>
+        <nav class="header-nav">
+            <a href="preview.html" class="nav-link">
+                <i data-lucide="library"></i> Library
+            </a>
+            <a href="preview_login.html" class="nav-link active">
+                <i data-lucide="lock"></i> Admin
+            </a>
+            <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
+                <i data-lucide="sun" class="icon-sun"></i>
+                <i data-lucide="moon" class="icon-moon"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main class="main-content login-page">
+
+        <div class="login-container">
+            <div class="login-card card">
+
+                <div class="login-header">
+                    <i data-lucide="shield"></i>
+                    <h1>Admin Sign In</h1>
+                    <p>Enter your credentials to manage the book collection.</p>
+                </div>
+
+                <!-- Sample error (uncomment to preview) -->
+                <!-- <div class="alert alert-error">Invalid username or password.</div> -->
+
+                <form onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary login-submit">
+                        <i data-lucide="log-in"></i>
+                        Sign In
+                    </button>
+                </form>
+
+            </div>
+
+            <a href="preview.html" class="login-back">
+                <i data-lucide="arrow-left"></i>
+                Back to Library
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        &copy; 2026 BookShelf &mdash; Book Management System
+    </footer>
+
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
