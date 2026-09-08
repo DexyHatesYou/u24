@@ -145,7 +145,11 @@ button, input, select, textarea {
     color: var(--accent);
 }
 
-.logo span {
+.logo .logo-text {
+    color: var(--text-primary);
+}
+
+.logo .logo-text span {
     color: var(--accent);
 }
 
@@ -177,6 +181,71 @@ button, input, select, textarea {
 .nav-link svg {
     width: 16px;
     height: 16px;
+}
+
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-dropdown .nav-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 150ms ease;
+}
+
+.user-dropdown .nav-user:hover {
+    color: var(--text-primary);
+    background: var(--accent-subtle);
+}
+
+.user-dropdown .nav-user svg {
+    width: 16px;
+    height: 16px;
+}
+
+.user-dropdown .user-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+    display: none;
+    flex-direction: column;
+    z-index: 200;
+    overflow: hidden;
+}
+
+.user-dropdown .user-dropdown-menu .nav-link {
+    width: 100%;
+    border-radius: 0;
+    padding: 10px 14px;
+}
+
+.user-dropdown .user-dropdown-menu .nav-link:hover {
+    background: var(--accent-subtle);
+}
+
+.user-dropdown:hover .user-dropdown-menu,
+.user-dropdown:focus-within .user-dropdown-menu {
+    display: flex;
+}
+
+@media (max-width: 600px) {
+    .user-dropdown .nav-user span {
+        display: none;
+    }
 }
 
 .theme-toggle {
@@ -349,6 +418,78 @@ button, input, select, textarea {
 textarea.form-control {
     resize: vertical;
     min-height: 120px;
+}
+
+.file-upload-wrapper {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--bg-input);
+    transition: all 150ms ease;
+    cursor: pointer;
+}
+
+.file-upload-wrapper:hover,
+.file-upload-wrapper:focus-within {
+    border-color: var(--accent);
+    background: var(--accent-subtle);
+}
+
+.file-upload-wrapper.is-dragover {
+    border-color: var(--success);
+    background: rgba(52, 211, 153, 0.1);
+    border-width: 3px;
+    transform: scale(1.02);
+}
+
+.file-upload-wrapper.is-dragover svg,
+.file-upload-wrapper.is-dragover i {
+    color: var(--success);
+    transform: scale(1.1);
+}
+
+.file-upload-wrapper.has-file {
+    border-color: var(--success);
+}
+
+.file-upload-wrapper.has-file svg,
+.file-upload-wrapper.has-file i {
+    color: var(--success);
+}
+
+.file-upload-wrapper svg,
+.file-upload-wrapper i {
+    width: 32px;
+    height: 32px;
+    color: var(--accent);
+    transition: all 150ms ease;
+}
+
+.file-upload-wrapper .file-upload-text {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.file-upload-wrapper .file-upload-subtext {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
 }
 
 .form-row {
@@ -538,6 +679,12 @@ table tbody tr:last-child td {
 }
 
 .book-card {
+    position: relative;
+    cursor: pointer;
+    transition: transform 150ms ease;
+}
+
+.book-card__link {
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -545,7 +692,39 @@ table tbody tr:last-child td {
     padding: 1rem 1.5rem;
     text-decoration: none;
     color: inherit;
+    width: 100%;
+    min-width: 0;
+}
+
+.book-card__delete-form {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+}
+
+.book-card__delete-form .btn-delete {
+    background: none;
+    border: none;
+    padding: 6px;
     cursor: pointer;
+    color: var(--text-muted);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms ease;
+}
+
+.book-card__delete-form .btn-delete svg,
+.book-card__delete-form .btn-delete i {
+    width: 16px;
+    height: 16px;
+}
+
+.book-card__delete-form .btn-delete:hover {
+    color: var(--danger);
+    background: rgba(239, 95, 95, 0.1);
 }
 
 .book-card:hover {
@@ -598,16 +777,22 @@ table tbody tr:last-child td {
 .book-card__title {
     font-size: 1rem;
     font-weight: 600;
+    margin-bottom: 2px;
     line-height: 1.3;
-    white-space: nowrap;
+    transition: color 250ms ease;
+    
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: color 150ms ease;
 }
 
 .book-card__author {
     font-size: 0.875rem;
     color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

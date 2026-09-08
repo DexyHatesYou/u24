@@ -50,15 +50,21 @@ $ratingEmpty = 5 - $ratingFull;
     <header class="site-header">
         <a href="index.php" class="logo">
             <i data-lucide="book-marked"></i>
-            Book<span>Shelf</span>
+            <span class="logo-text">Book<span>Shelf</span></span>
         </a>
         <nav class="header-nav">
             <a href="index.php" class="nav-link active">
                 <i data-lucide="library"></i> Library
             </a>
-            <a href="login.php" class="nav-link">
-                <i data-lucide="lock"></i> Admin
-            </a>
+            <?php if (isLoggedIn()): ?>
+                <a href="admin.php" class="nav-link">
+                    <i data-lucide="settings"></i> Admin
+                </a>
+            <?php else: ?>
+                <a href="login.php" class="nav-link">
+                    <i data-lucide="lock"></i> Admin
+                </a>
+            <?php endif; ?>
             <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
                 <i data-lucide="sun" class="icon-sun"></i>
                 <i data-lucide="moon" class="icon-moon"></i>

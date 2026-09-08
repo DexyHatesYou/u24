@@ -14,9 +14,11 @@ requireAuth();
 $pdo       = getDB();
 $errors     = [];
 $success    = '';
-$pwdErrors  = [];
-$pwdSuccess = '';
-$formData   = [
+$pwdErrors     = [];
+$pwdSuccess    = '';
+$importErrors  = [];
+$importSuccess = '';
+$formData      = [
     'title'        => '',
     'author'       => '',
     'release_year' => '',
@@ -80,7 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['form_action'] ?? '') === '
 
         // ── Insert if valid ─────────────────────────────────────
         if (empty($errors)) {
-            $stmt = $pdo->prepare("
+            // Anti-duplicate check (by title)
+            $dupStmt = $pdo->prepare("SELECT COUNT(*) FROM books WHERE LOWER(title) = LOWER(:title)");
+            $dupStmt->execute([':title' => $formData['title']]);
+            if ($dupStmt->fetchColumn() > 0) {
+                $errors[] = 'A book with this title already exists in the database.';
+            } else {
+                $stmt = $pdo->prepare("
                 INSERT INTO books (title, author, release_year, annotation, rating)
                 VALUES (:title, :author, :year, :annotation, :rating)
             ");
@@ -103,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['form_action'] ?? '') === '
                 'rating'       => '',
             ];
             rotateCsrfToken();
+            }
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['form_action'] ?? '') === 'change_password') {
@@ -142,6 +151,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['form_action'] ?? '') === '
             }
         }
     }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['form_action'] ?? '') === 'import_json') {
+    // CSRF check
+    if (!validateCsrf($_POST['csrf_token'] ?? '')) {
+        $importErrors[] = 'Invalid form submission. Please try again.';
+    } elseif (!isset($_FILES['json_file']) || $_FILES['json_file']['error'] === UPLOAD_ERR_NO_FILE) {
+        $importErrors[] = 'Please select a JSON file to upload.';
+    } elseif ($_FILES['json_file']['error'] !== UPLOAD_ERR_OK) {
+        $importErrors[] = 'File upload error. Please try again.';
+    } else {
+        $fileTmpPath = $_FILES['json_file']['tmp_name'];
+        $fileName    = $_FILES['json_file']['name'];
+        
+        // Ensure it has a .json extension
+        if (strtolower(pathinfo($fileName, PATHINFO_EXTENSION)) !== 'json') {
+            $importErrors[] = 'Uploaded file must be a JSON file.';
+        } else {
+            $jsonContent = file_get_contents($fileTmpPath);
+            $books = json_decode($jsonContent, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $importErrors[] = 'Invalid JSON format in the uploaded file.';
+            } elseif (!is_array($books)) {
+                $importErrors[] = 'JSON file must contain an array of books.';
+            } else {
+                // Bulk insert via transaction
+                try {
+                    $pdo->beginTransaction();
+                    
+                    $stmt = $pdo->prepare("
+                        INSERT INTO books (title, author, release_year, annotation, rating)
+                        VALUES (:title, :author, :year, :annotation, :rating)
+                    ");
+                    
+                    $importedCount = 0;
+                    $skippedCount = 0;
+                    
+                    $checkDupStmt = $pdo->prepare("SELECT COUNT(*) FROM books WHERE LOWER(title) = LOWER(:title)");
+                    
+                    foreach ($books as $index => $book) {
+                        // Basic validation for required structure
+                        if (empty($book['title']) || empty($book['author'])) {
+                            continue; // Skip invalid entries silently, or we could error out
+                        }
+                        
+                        $cleanTitle = mb_substr(trim($book['title']), 0, 255);
+                        
+                        // Check if duplicate
+                        $checkDupStmt->execute([':title' => $cleanTitle]);
+                        if ($checkDupStmt->fetchColumn() > 0) {
+                            $skippedCount++;
+                            continue;
+                        }
+                        
+                        $stmt->execute([
+                            ':title'      => $cleanTitle,
+                            ':author'     => mb_substr(trim($book['author']), 0, 255),
+                            ':year'       => isset($book['release_year']) ? (int) $book['release_year'] : null,
+                            ':annotation' => isset($book['annotation']) ? mb_substr(trim($book['annotation']), 0, 5000) : '',
+                            ':rating'     => isset($book['rating']) ? round((float) $book['rating'], 1) : 0.0,
+                        ]);
+                        $importedCount++;
+                    }
+                    
+                    $pdo->commit();
+                    $msg = "Successfully imported $importedCount books.";
+                    if ($skippedCount > 0) {
+                        $msg .= " Skipped $skippedCount duplicates.";
+                    }
+                    $importSuccess = $msg;
+                    rotateCsrfToken();
+                } catch (Exception $e) {
+                    $pdo->rollBack();
+                    $importErrors[] = 'Database error during import: ' . $e->getMessage();
+                }
+            }
+        }
+    }
 }
 
 $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
@@ -171,7 +257,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
     <header class="site-header">
         <a href="index.php" class="logo">
             <i data-lucide="book-marked"></i>
-            Book<span>Shelf</span>
+            <span class="logo-text">Book<span>Shelf</span></span>
         </a>
         <nav class="header-nav">
             <a href="index.php" class="nav-link">
@@ -179,13 +265,6 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
             </a>
             <a href="admin.php" class="nav-link active">
                 <i data-lucide="settings"></i> Admin
-            </a>
-            <span class="nav-user">
-                <i data-lucide="user"></i>
-                <?= htmlspecialchars($_SESSION['user_name']) ?>
-            </span>
-            <a href="logout.php" class="nav-link nav-link--logout">
-                <i data-lucide="log-out"></i> Logout
             </a>
             <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
                 <i data-lucide="sun" class="icon-sun"></i>
@@ -218,6 +297,9 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                 <div class="stat-card__body">
                     <span class="stat-card__value"><?= htmlspecialchars($_SESSION['user_name']) ?></span>
                     <span class="stat-card__label">Logged in as</span>
+                    <a href="logout.php" class="btn btn-outline" style="margin-top: 12px; font-size: 13px; padding: 4px 10px;">
+                        <i data-lucide="log-out" style="width: 14px; height: 14px; margin:0;"></i> Logout
+                    </a>
                 </div>
             </div>
         </div>
@@ -328,13 +410,48 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
 
             </div>
 
-            <!-- JSON Import — placeholder for Step 6 -->
+            <!-- ─── JSON Import ─────────────────────────────────────────── -->
             <div class="admin-section card" id="import-json">
                 <h2 class="admin-section__title">
                     <i data-lucide="upload"></i>
                     Import from JSON
                 </h2>
-                <p class="admin-section__desc">JSON import will be built in the next step.</p>
+                
+                <?php if ($importSuccess): ?>
+                    <div class="alert alert-success"><?= htmlspecialchars($importSuccess) ?></div>
+                <?php endif; ?>
+
+                <?php if (!empty($importErrors)): ?>
+                    <div class="alert alert-error">
+                        <ul class="error-list">
+                            <?php foreach ($importErrors as $err): ?>
+                                <li><?= htmlspecialchars($err) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+                
+                <p class="admin-section__desc" style="margin-bottom: 1rem;">Upload a JSON file containing an array of books to bulk add them to the database.</p>
+
+                <form method="POST" action="admin.php#import-json" enctype="multipart/form-data" novalidate>
+                    <?= csrfField() ?>
+                    <input type="hidden" name="form_action" value="import_json">
+                    
+                    <div class="form-group">
+                        <label>Select JSON File <span class="required">*</span></label>
+                        <div class="file-upload-wrapper">
+                            <i data-lucide="upload-cloud"></i>
+                            <span class="file-upload-text">Click to upload or drag and drop</span>
+                            <span class="file-upload-subtext">JSON files only (.json)</span>
+                            <input type="file" name="json_file" id="json_file" accept=".json" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i data-lucide="upload-cloud"></i>
+                        Import Books
+                    </button>
+                </form>
             </div>
 
             <!-- ─── Change Password ─────────────────────────────────────── -->

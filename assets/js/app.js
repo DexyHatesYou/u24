@@ -45,6 +45,37 @@ document.addEventListener('DOMContentLoaded', () => {
         printBtn.addEventListener('click', () => window.print());
     }
 
+    // ── File Upload Feedback ────────────────────────────────────
+    const fileInputs = document.querySelectorAll('.file-upload-wrapper input[type="file"]');
+    fileInputs.forEach(input => {
+        const wrapper = input.closest('.file-upload-wrapper');
+        const textEl = wrapper.querySelector('.file-upload-text');
+
+        // Handle file selection
+        input.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                textEl.textContent = this.files[0].name;
+                wrapper.classList.add('has-file');
+            } else {
+                textEl.textContent = 'Click to upload or drag and drop';
+                wrapper.classList.remove('has-file');
+            }
+        });
+
+        // Handle drag events for visual feedback
+        ['dragenter', 'dragover'].forEach(eventName => {
+            input.addEventListener(eventName, (e) => {
+                wrapper.classList.add('is-dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            input.addEventListener(eventName, (e) => {
+                wrapper.classList.remove('is-dragover');
+            });
+        });
+    });
+
     // ── Lucide Icons ────────────────────────────────────────────
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();

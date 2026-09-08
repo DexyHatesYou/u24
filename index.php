@@ -4,7 +4,19 @@
  */
 require_once __DIR__ . '/includes/bootstrap.php';
 
-$pdo   = getDB();
+$pdo = getDB();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete_book' && isLoggedIn()) {
+    if (validateCsrf($_POST['csrf_token'] ?? '')) {
+        $deleteId = (int)($_POST['book_id'] ?? 0);
+        $stmt = $pdo->prepare("DELETE FROM books WHERE id = :id");
+        $stmt->execute([':id' => $deleteId]);
+        rotateCsrfToken();
+        header("Location: index.php?msg=deleted");
+        exit;
+    }
+}
+
 $books = $pdo->query("SELECT id, title, author, release_year, rating FROM books ORDER BY title ASC")->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -32,15 +44,21 @@ $books = $pdo->query("SELECT id, title, author, release_year, rating FROM books 
     <header class="site-header">
         <a href="index.php" class="logo">
             <i data-lucide="book-marked"></i>
-            Book<span>Shelf</span>
+            <span class="logo-text">Book<span>Shelf</span></span>
         </a>
         <nav class="header-nav">
             <a href="index.php" class="nav-link active">
                 <i data-lucide="library"></i> Library
             </a>
-            <a href="login.php" class="nav-link">
-                <i data-lucide="lock"></i> Admin
-            </a>
+            <?php if (isLoggedIn()): ?>
+                <a href="admin.php" class="nav-link">
+                    <i data-lucide="settings"></i> Admin
+                </a>
+            <?php else: ?>
+                <a href="login.php" class="nav-link">
+                    <i data-lucide="lock"></i> Admin
+                </a>
+            <?php endif; ?>
             <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
                 <i data-lucide="sun" class="icon-sun"></i>
                 <i data-lucide="moon" class="icon-moon"></i>
@@ -73,24 +91,37 @@ $books = $pdo->query("SELECT id, title, author, release_year, rating FROM books 
         <?php else: ?>
             <div class="book-grid">
                 <?php foreach ($books as $book): ?>
-                    <a href="detail.php?id=<?= (int)$book['id'] ?>" class="book-card card">
-                        <div class="book-card__cover">
-                            <span class="book-card__initial"><?= htmlspecialchars(mb_substr($book['title'], 0, 1)) ?></span>
-                        </div>
-                        <div class="book-card__body">
-                            <h3 class="book-card__title"><?= htmlspecialchars($book['title']) ?></h3>
-                            <p class="book-card__author"><?= htmlspecialchars($book['author']) ?></p>
-                            <div class="book-card__meta">
-                                <span class="badge"><?= (int)$book['release_year'] ?></span>
-                                <?php if ($book['rating'] > 0): ?>
-                                    <span class="book-card__rating">
-                                        <?= str_repeat('★', (int)round($book['rating'])) . str_repeat('☆', 5 - (int)round($book['rating'])) ?>
-                                        <small><?= number_format($book['rating'], 1) ?></small>
-                                    </span>
-                                <?php endif; ?>
+                    <div class="book-card card">
+                        <a href="detail.php?id=<?= (int)$book['id'] ?>" class="book-card__link">
+                            <div class="book-card__cover">
+                                <span class="book-card__initial"><?= htmlspecialchars(mb_substr($book['title'], 0, 1)) ?></span>
                             </div>
-                        </div>
-                    </a>
+                            <div class="book-card__body">
+                                <h3 class="book-card__title"><?= htmlspecialchars($book['title']) ?></h3>
+                                <p class="book-card__author"><?= htmlspecialchars($book['author']) ?></p>
+                                <div class="book-card__meta">
+                                    <span class="badge"><?= (int)$book['release_year'] ?></span>
+                                    <?php if ($book['rating'] > 0): ?>
+                                        <span class="book-card__rating">
+                                            <?= str_repeat('★', (int)round($book['rating'])) . str_repeat('☆', 5 - (int)round($book['rating'])) ?>
+                                            <small><?= number_format($book['rating'], 1) ?></small>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <?php if (isLoggedIn()): ?>
+                            <form method="POST" action="index.php" class="book-card__delete-form" onsubmit="return confirm('Are you sure you want to delete this book?');">
+                                <?= csrfField() ?>
+                                <input type="hidden" name="action" value="delete_book">
+                                <input type="hidden" name="book_id" value="<?= (int)$book['id'] ?>">
+                                <button type="submit" class="btn-delete" title="Delete book">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
                 <?php endforeach; ?>
             </div>
 
