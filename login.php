@@ -59,19 +59,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header class="site-header">
         <a href="index.php" class="logo">
             <i data-lucide="book-marked"></i>
-            Book<span>Shelf</span>
+            <span class="logo-text">Book<span>Shelf</span></span>
         </a>
         <nav class="header-nav">
             <a href="index.php" class="nav-link">
-                <i data-lucide="library"></i> Library
+                <i data-lucide="library"></i> <?= __('nav_library') ?>
             </a>
             <a href="login.php" class="nav-link active">
-                <i data-lucide="lock"></i> Admin
+                <i data-lucide="lock"></i> <?= __('nav_admin') ?>
             </a>
             <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
                 <i data-lucide="sun" class="icon-sun"></i>
                 <i data-lucide="moon" class="icon-moon"></i>
             </button>
+            <a href="?set_lang=<?= $currentLang === 'en' ? 'cs' : 'en' ?>" class="lang-toggle" data-lang="<?= $currentLang ?>" title="Switch language">
+                <span class="<?= $currentLang === 'en' ? 'active' : '' ?>">EN</span>
+                <span class="<?= $currentLang === 'cs' ? 'active' : '' ?>">CS</span>
+            </a>
         </nav>
     </header>
 
@@ -83,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="login-header">
                     <i data-lucide="shield"></i>
-                    <h1>Admin Sign In</h1>
-                    <p>Enter your credentials to manage the book collection.</p>
+                    <h1><?= __('login_title') ?></h1>
+                    <p></p>
                 </div>
 
                 <?php if ($error): ?>
@@ -95,36 +99,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?= csrfField() ?>
 
                     <div class="form-group">
-                        <label for="username">Username</label>
+                        <label for="username"><?= __('username') ?></label>
                         <input
                             type="text"
                             id="username"
                             name="username"
                             class="form-control"
-                            placeholder="Enter username"
                             required
                             autofocus
-                            maxlength="50"
-                            value="<?= htmlspecialchars($_POST['username'] ?? '') ?>"
                         >
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="password"><?= __('password') ?></label>
                         <input
                             type="password"
                             id="password"
                             name="password"
                             class="form-control"
-                            placeholder="Enter password"
                             required
-                            maxlength="255"
                         >
                     </div>
 
-                    <button type="submit" class="btn btn-primary login-submit">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
                         <i data-lucide="log-in"></i>
-                        Sign In
+                        <?= __('login') ?>
                     </button>
                 </form>
 

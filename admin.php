@@ -261,15 +261,19 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
         </a>
         <nav class="header-nav">
             <a href="index.php" class="nav-link">
-                <i data-lucide="library"></i> Library
+                <i data-lucide="library"></i> <?= __('nav_library') ?>
             </a>
             <a href="admin.php" class="nav-link active">
-                <i data-lucide="settings"></i> Admin
+                <i data-lucide="settings"></i> <?= __('nav_admin') ?>
             </a>
             <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
                 <i data-lucide="sun" class="icon-sun"></i>
                 <i data-lucide="moon" class="icon-moon"></i>
             </button>
+            <a href="?set_lang=<?= $currentLang === 'en' ? 'cs' : 'en' ?>" class="lang-toggle" data-lang="<?= $currentLang ?>" title="Switch language">
+                <span class="<?= $currentLang === 'en' ? 'active' : '' ?>">EN</span>
+                <span class="<?= $currentLang === 'cs' ? 'active' : '' ?>">CS</span>
+            </a>
         </nav>
     </header>
 
@@ -279,7 +283,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
         <div class="page-title-row">
             <h1>
                 <i data-lucide="settings"></i>
-                Admin Panel
+                <?= __('admin_panel') ?>
             </h1>
         </div>
 
@@ -289,16 +293,16 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                 <i data-lucide="book-open"></i>
                 <div class="stat-card__body">
                     <span class="stat-card__value"><?= $bookCount ?></span>
-                    <span class="stat-card__label">Books in Collection</span>
+                    <span class="stat-card__label"><?= __('books_in_collection') ?></span>
                 </div>
             </div>
             <div class="stat-card card">
                 <i data-lucide="user-check"></i>
                 <div class="stat-card__body">
                     <span class="stat-card__value"><?= htmlspecialchars($_SESSION['user_name']) ?></span>
-                    <span class="stat-card__label">Logged in as</span>
+                    <span class="stat-card__label"><?= __('logged_in_as') ?></span>
                     <a href="logout.php" class="btn btn-outline" style="margin-top: 12px; font-size: 13px; padding: 4px 10px;">
-                        <i data-lucide="log-out" style="width: 14px; height: 14px; margin:0;"></i> Logout
+                        <i data-lucide="log-out" style="width: 14px; height: 14px; margin:0;"></i> <?= __('nav_logout') ?>
                     </a>
                 </div>
             </div>
@@ -309,7 +313,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
             <div class="admin-section card" id="add-book">
                 <h2 class="admin-section__title">
                     <i data-lucide="plus-circle"></i>
-                    Add New Book
+                    <?= __('add_new_book') ?>
                 </h2>
 
                 <?php if ($success): ?>
@@ -332,7 +336,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="title">Title <span class="required">*</span></label>
+                            <label for="title"><?= __('title') ?> <span class="required">*</span></label>
                             <input
                                 type="text"
                                 id="title"
@@ -345,7 +349,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                             >
                         </div>
                         <div class="form-group">
-                            <label for="author">Author <span class="required">*</span></label>
+                            <label for="author"><?= __('author') ?> <span class="required">*</span></label>
                             <input
                                 type="text"
                                 id="author"
@@ -361,7 +365,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
 
                     <div class="form-row form-row--narrow">
                         <div class="form-group">
-                            <label for="release_year">Release Year <span class="required">*</span></label>
+                            <label for="release_year"><?= __('release_year') ?> <span class="required">*</span></label>
                             <input
                                 type="number"
                                 id="release_year"
@@ -375,13 +379,13 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                             >
                         </div>
                         <div class="form-group">
-                            <label for="rating">Rating (0–5) <span class="required">*</span></label>
+                            <label for="rating"><?= __('rating') ?> (0–5) <span class="required">*</span></label>
                             <input
                                 type="number"
                                 id="rating"
                                 name="rating"
                                 class="form-control"
-                                placeholder="e.g. 4.5"
+                                placeholder="<?= __('eg_rating') ?>"
                                 required
                                 min="0"
                                 max="5"
@@ -392,19 +396,19 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                     </div>
 
                     <div class="form-group">
-                        <label for="annotation">Annotation</label>
+                        <label for="annotation"><?= __('annotation') ?> <?= __('optional') ?></label>
                         <textarea
                             id="annotation"
                             name="annotation"
                             class="form-control"
-                            placeholder="Brief description of the book (optional)"
+                            placeholder=""
                             maxlength="5000"
                         ><?= htmlspecialchars($formData['annotation']) ?></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-primary">
                         <i data-lucide="plus"></i>
-                        Add Book
+                        <?= __('add_book') ?>
                     </button>
                 </form>
 
@@ -414,7 +418,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
             <div class="admin-section card" id="import-json">
                 <h2 class="admin-section__title">
                     <i data-lucide="upload"></i>
-                    Import from JSON
+                    <?= __('import_json') ?>
                 </h2>
                 
                 <?php if ($importSuccess): ?>
@@ -431,25 +435,25 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                     </div>
                 <?php endif; ?>
                 
-                <p class="admin-section__desc" style="margin-bottom: 1rem;">Upload a JSON file containing an array of books to bulk add them to the database.</p>
+                <p class="admin-section__desc" style="margin-bottom: 1rem;"><?= __('import_desc') ?></p>
 
                 <form method="POST" action="admin.php#import-json" enctype="multipart/form-data" novalidate>
                     <?= csrfField() ?>
                     <input type="hidden" name="form_action" value="import_json">
                     
                     <div class="form-group">
-                        <label>Select JSON File <span class="required">*</span></label>
+                        <label><?= __('select_json') ?> <span class="required">*</span></label>
                         <div class="file-upload-wrapper">
                             <i data-lucide="upload-cloud"></i>
-                            <span class="file-upload-text">Click to upload or drag and drop</span>
-                            <span class="file-upload-subtext">JSON files only (.json)</span>
+                            <span class="file-upload-text"><?= __('drag_drop') ?></span>
+                            <span class="file-upload-subtext"><?= __('json_only') ?></span>
                             <input type="file" name="json_file" id="json_file" accept=".json" required>
                         </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">
                         <i data-lucide="upload-cloud"></i>
-                        Import Books
+                        <?= __('import_books') ?>
                     </button>
                 </form>
             </div>
@@ -458,7 +462,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
             <div class="admin-section card" id="change-password">
                 <h2 class="admin-section__title">
                     <i data-lucide="key"></i>
-                    Change Password
+                    <?= __('change_password') ?>
                 </h2>
 
                 <?php if ($pwdSuccess): ?>
@@ -480,7 +484,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                     <input type="hidden" name="form_action" value="change_password">
 
                     <div class="form-group">
-                        <label for="current_password">Current Password <span class="required">*</span></label>
+                        <label for="current_password"><?= __('current_password') ?> <span class="required">*</span></label>
                         <input
                             type="password"
                             id="current_password"
@@ -492,7 +496,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="new_password">New Password <span class="required">*</span></label>
+                            <label for="new_password"><?= __('new_password') ?> <span class="required">*</span></label>
                             <input
                                 type="password"
                                 id="new_password"
@@ -502,7 +506,7 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                             >
                         </div>
                         <div class="form-group">
-                            <label for="confirm_password">Confirm New Password <span class="required">*</span></label>
+                            <label for="confirm_password"><?= __('confirm_password') ?> <span class="required">*</span></label>
                             <input
                                 type="password"
                                 id="confirm_password"
@@ -514,8 +518,8 @@ $bookCount = (int) $pdo->query("SELECT COUNT(*) FROM books")->fetchColumn();
                     </div>
 
                     <button type="submit" class="btn btn-primary">
-                        <i data-lucide="check-circle"></i>
-                        Update Password
+                        <i data-lucide="save"></i>
+                        <?= __('update_password') ?>
                     </button>
                 </form>
             </div>

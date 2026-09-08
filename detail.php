@@ -54,21 +54,25 @@ $ratingEmpty = 5 - $ratingFull;
         </a>
         <nav class="header-nav">
             <a href="index.php" class="nav-link active">
-                <i data-lucide="library"></i> Library
+                <i data-lucide="library"></i> <?= __('nav_library') ?>
             </a>
             <?php if (isLoggedIn()): ?>
                 <a href="admin.php" class="nav-link">
-                    <i data-lucide="settings"></i> Admin
+                    <i data-lucide="settings"></i> <?= __('nav_admin') ?>
                 </a>
             <?php else: ?>
                 <a href="login.php" class="nav-link">
-                    <i data-lucide="lock"></i> Admin
+                    <i data-lucide="lock"></i> <?= __('nav_admin') ?>
                 </a>
             <?php endif; ?>
             <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
                 <i data-lucide="sun" class="icon-sun"></i>
                 <i data-lucide="moon" class="icon-moon"></i>
             </button>
+            <a href="?set_lang=<?= $currentLang === 'en' ? 'cs' : 'en' ?>" class="lang-toggle" data-lang="<?= $currentLang ?>" title="Switch language">
+                <span class="<?= $currentLang === 'en' ? 'active' : '' ?>">EN</span>
+                <span class="<?= $currentLang === 'cs' ? 'active' : '' ?>">CS</span>
+            </a>
         </nav>
     </header>
 
@@ -77,7 +81,7 @@ $ratingEmpty = 5 - $ratingFull;
 
         <a href="index.php" class="back-link">
             <i data-lucide="arrow-left"></i>
-            Back to Library
+            <?= __('back_to_library') ?>
         </a>
 
         <div class="detail-layout">

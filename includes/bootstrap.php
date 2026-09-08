@@ -18,6 +18,9 @@ require_once __DIR__ . '/auth.php';
 configureSession();
 session_start();
 
+// Include i18n
+require_once __DIR__ . '/lang.php';
+
 // Auto-initialize database tables on first request
 $dbPath = __DIR__ . '/../database/books.db';
 if (!file_exists($dbPath) || filesize($dbPath) === 0) {

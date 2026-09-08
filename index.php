@@ -48,21 +48,25 @@ $books = $pdo->query("SELECT id, title, author, release_year, rating FROM books 
         </a>
         <nav class="header-nav">
             <a href="index.php" class="nav-link active">
-                <i data-lucide="library"></i> Library
+                <i data-lucide="library"></i> <?= __('nav_library') ?>
             </a>
             <?php if (isLoggedIn()): ?>
                 <a href="admin.php" class="nav-link">
-                    <i data-lucide="settings"></i> Admin
+                    <i data-lucide="settings"></i> <?= __('nav_admin') ?>
                 </a>
             <?php else: ?>
                 <a href="login.php" class="nav-link">
-                    <i data-lucide="lock"></i> Admin
+                    <i data-lucide="lock"></i> <?= __('nav_admin') ?>
                 </a>
             <?php endif; ?>
             <button id="theme-toggle" class="theme-toggle" title="Toggle theme">
                 <i data-lucide="sun" class="icon-sun"></i>
                 <i data-lucide="moon" class="icon-moon"></i>
             </button>
+            <a href="?set_lang=<?= $currentLang === 'en' ? 'cs' : 'en' ?>" class="lang-toggle" data-lang="<?= $currentLang ?>" title="Switch language">
+                <span class="<?= $currentLang === 'en' ? 'active' : '' ?>">EN</span>
+                <span class="<?= $currentLang === 'cs' ? 'active' : '' ?>">CS</span>
+            </a>
         </nav>
     </header>
 
@@ -72,12 +76,12 @@ $books = $pdo->query("SELECT id, title, author, release_year, rating FROM books 
         <div class="page-title-row">
             <h1>
                 <i data-lucide="library"></i>
-                Book Collection
+                <?= __('book_collection') ?>
             </h1>
             <div class="actions no-print">
                 <button id="btn-print" class="btn btn-outline" title="Print book list">
                     <i data-lucide="printer"></i>
-                    Print List
+                    <?= __('print_list') ?>
                 </button>
             </div>
         </div>
@@ -85,8 +89,8 @@ $books = $pdo->query("SELECT id, title, author, release_year, rating FROM books 
         <?php if (empty($books)): ?>
             <div class="empty-state">
                 <i data-lucide="book-open"></i>
-                <p>No books in the collection yet.</p>
-                <a href="login.php" class="btn btn-primary">Add Books</a>
+                <p><?= __('no_books') ?></p>
+                <a href="login.php" class="btn btn-primary"><?= __('add_books') ?></a>
             </div>
         <?php else: ?>
             <div class="book-grid">
@@ -127,15 +131,15 @@ $books = $pdo->query("SELECT id, title, author, release_year, rating FROM books 
 
             <!-- Print-only table -->
             <div class="print-only">
-                <h2>Book Collection</h2>
+                <h2><?= __('book_collection') ?></h2>
                 <table>
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Year</th>
-                            <th>Rating</th>
+                            <th><?= __('title') ?></th>
+                            <th><?= __('author') ?></th>
+                            <th><?= __('release_year') ?></th>
+                            <th><?= __('rating') ?></th>
                         </tr>
                     </thead>
                     <tbody>
