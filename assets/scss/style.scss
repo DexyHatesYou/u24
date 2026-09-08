@@ -1,0 +1,485 @@
+// ═══════════════════════════════════════════════════════════════════
+//  VARIABLES & DESIGN TOKENS
+// ═══════════════════════════════════════════════════════════════════
+
+// ── Palette (Dark Theme) ────────────────────────────────────────
+$bg-primary:     #0f1117;
+$bg-secondary:   #161923;
+$bg-card:        #1c1f2e;
+$bg-input:       #232636;
+
+$accent:         #6c63ff;
+$accent-hover:   #857eff;
+$accent-subtle:  rgba(108, 99, 255, 0.12);
+
+$text-primary:   #e8e6f0;
+$text-secondary: #9a97b0;
+$text-muted:     #5e5c6e;
+
+$success:        #2dd4a8;
+$danger:         #ff6b6b;
+$warning:        #ffb347;
+
+$border-color:   #2a2d3e;
+$border-radius:  8px;
+
+// ── Typography ──────────────────────────────────────────────────
+$font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+$font-mono:   'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+$font-size-xs:  0.75rem;
+$font-size-sm:  0.875rem;
+$font-size-md:  1rem;
+$font-size-lg:  1.25rem;
+$font-size-xl:  1.5rem;
+$font-size-2xl: 2rem;
+$font-size-3xl: 2.5rem;
+
+// ── Spacing ─────────────────────────────────────────────────────
+$space-xs:  0.25rem;
+$space-sm:  0.5rem;
+$space-md:  1rem;
+$space-lg:  1.5rem;
+$space-xl:  2rem;
+$space-2xl: 3rem;
+$space-3xl: 4rem;
+
+// ── Shadows ─────────────────────────────────────────────────────
+$shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.3);
+$shadow-md:  0 4px 12px rgba(0, 0, 0, 0.35);
+$shadow-lg:  0 8px 30px rgba(0, 0, 0, 0.4);
+
+// ── Transitions ─────────────────────────────────────────────────
+$transition-fast: 150ms ease;
+$transition-base: 250ms ease;
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  RESET & BASE
+// ═══════════════════════════════════════════════════════════════════
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: $font-family;
+    background-color: $bg-primary;
+    color: $text-primary;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a {
+    color: $accent;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+        color: $accent-hover;
+    }
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  LAYOUT — WIDE DESKTOP-FIRST
+// ═══════════════════════════════════════════════════════════════════
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-md $space-2xl;
+    background: $bg-secondary;
+    border-bottom: 1px solid $border-color;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    .logo {
+        font-size: $font-size-xl;
+        font-weight: 700;
+        color: $text-primary;
+        letter-spacing: -0.02em;
+
+        span {
+            color: $accent;
+        }
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: $space-lg;
+
+        a {
+            color: $text-secondary;
+            font-size: $font-size-sm;
+            font-weight: 500;
+            padding: $space-xs $space-sm;
+            border-radius: $border-radius;
+            transition: all $transition-fast;
+
+            &:hover,
+            &.active {
+                color: $text-primary;
+                background: $accent-subtle;
+            }
+        }
+    }
+}
+
+.main-content {
+    flex: 1;
+    padding: $space-2xl;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.site-footer {
+    padding: $space-lg $space-2xl;
+    text-align: center;
+    color: $text-muted;
+    font-size: $font-size-xs;
+    border-top: 1px solid $border-color;
+    background: $bg-secondary;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  COMPONENTS
+// ═══════════════════════════════════════════════════════════════════
+
+// ── Buttons ─────────────────────────────────────────────────────
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-sm;
+    padding: $space-sm $space-lg;
+    border: none;
+    border-radius: $border-radius;
+    font-weight: 600;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    transition: all $transition-fast;
+    line-height: 1.4;
+
+    &-primary {
+        background: $accent;
+        color: #fff;
+
+        &:hover {
+            background: $accent-hover;
+            box-shadow: $shadow-md;
+            transform: translateY(-1px);
+        }
+    }
+
+    &-outline {
+        background: transparent;
+        color: $text-secondary;
+        border: 1px solid $border-color;
+
+        &:hover {
+            color: $text-primary;
+            border-color: $accent;
+            background: $accent-subtle;
+        }
+    }
+
+    &-danger {
+        background: $danger;
+        color: #fff;
+
+        &:hover {
+            background: darken($danger, 8%);
+        }
+    }
+
+    &-success {
+        background: $success;
+        color: $bg-primary;
+
+        &:hover {
+            background: darken($success, 8%);
+        }
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+}
+
+// ── Cards ───────────────────────────────────────────────────────
+.card {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    padding: $space-lg;
+    transition: all $transition-base;
+
+    &:hover {
+        border-color: rgba($accent, 0.3);
+        box-shadow: $shadow-md;
+    }
+}
+
+// ── Form Elements ───────────────────────────────────────────────
+.form-group {
+    margin-bottom: $space-lg;
+
+    label {
+        display: block;
+        margin-bottom: $space-xs;
+        font-size: $font-size-sm;
+        font-weight: 500;
+        color: $text-secondary;
+    }
+}
+
+.form-control {
+    width: 100%;
+    padding: $space-sm $space-md;
+    background: $bg-input;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    color: $text-primary;
+    transition: border-color $transition-fast;
+
+    &:focus {
+        outline: none;
+        border-color: $accent;
+        box-shadow: 0 0 0 3px $accent-subtle;
+    }
+
+    &::placeholder {
+        color: $text-muted;
+    }
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+// ── Alerts / Flash Messages ─────────────────────────────────────
+.alert {
+    padding: $space-md $space-lg;
+    border-radius: $border-radius;
+    font-size: $font-size-sm;
+    margin-bottom: $space-lg;
+    border-left: 4px solid;
+
+    &-success {
+        background: rgba($success, 0.1);
+        border-color: $success;
+        color: $success;
+    }
+
+    &-error {
+        background: rgba($danger, 0.1);
+        border-color: $danger;
+        color: $danger;
+    }
+
+    &-warning {
+        background: rgba($warning, 0.1);
+        border-color: $warning;
+        color: $warning;
+    }
+}
+
+// ── Table ───────────────────────────────────────────────────────
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: $border-radius;
+    border: 1px solid $border-color;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+        padding: $space-md $space-lg;
+        text-align: left;
+        border-bottom: 1px solid $border-color;
+    }
+
+    th {
+        background: $bg-secondary;
+        font-size: $font-size-xs;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: $text-secondary;
+    }
+
+    td {
+        font-size: $font-size-sm;
+    }
+
+    tbody tr {
+        transition: background $transition-fast;
+
+        &:hover {
+            background: $accent-subtle;
+        }
+
+        &:last-child td {
+            border-bottom: none;
+        }
+    }
+}
+
+// ── Rating Stars ────────────────────────────────────────────────
+.rating {
+    display: inline-flex;
+    gap: 2px;
+
+    .star {
+        color: $text-muted;
+        font-size: $font-size-lg;
+
+        &.filled {
+            color: $warning;
+        }
+
+        &.half {
+            color: $warning;
+            opacity: 0.6;
+        }
+    }
+}
+
+// ── Page Title Row ──────────────────────────────────────────────
+.page-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-2xl;
+    flex-wrap: wrap;
+    gap: $space-md;
+
+    h1 {
+        font-size: $font-size-2xl;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .actions {
+        display: flex;
+        gap: $space-sm;
+    }
+}
+
+// ── Badge ───────────────────────────────────────────────────────
+.badge {
+    display: inline-block;
+    padding: 2px $space-sm;
+    border-radius: 999px;
+    font-size: $font-size-xs;
+    font-weight: 600;
+    background: $accent-subtle;
+    color: $accent;
+}
+
+// ── Empty State ─────────────────────────────────────────────────
+.empty-state {
+    text-align: center;
+    padding: $space-3xl $space-xl;
+    color: $text-muted;
+
+    .icon {
+        font-size: 3rem;
+        margin-bottom: $space-md;
+    }
+
+    p {
+        font-size: $font-size-md;
+        margin-bottom: $space-lg;
+    }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  PRINT STYLES
+// ═══════════════════════════════════════════════════════════════════
+
+@media print {
+    body {
+        background: #fff;
+        color: #000;
+    }
+
+    .site-header,
+    .site-footer,
+    .no-print {
+        display: none !important;
+    }
+
+    .main-content {
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .card {
+        border: 1px solid #ccc;
+        box-shadow: none;
+        break-inside: avoid;
+    }
+
+    table {
+        th {
+            background: #eee;
+            color: #000;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            color: #000;
+        }
+    }
+
+    a {
+        color: #000;
+        text-decoration: underline;
+    }
+
+    .rating .star {
+        color: #ccc;
+
+        &.filled {
+            color: #f5a623;
+        }
+    }
+}
