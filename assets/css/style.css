@@ -603,6 +603,137 @@ table tbody tr:last-child td {
     color: var(--rating-star-off);
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+ *  Detail Page
+ * ═══════════════════════════════════════════════════════════════════ */
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    text-decoration: none;
+    transition: color 150ms ease;
+}
+
+.back-link svg {
+    width: 16px;
+    height: 16px;
+}
+
+.back-link:hover {
+    color: var(--accent);
+}
+
+.detail-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.detail-cover__visual {
+    width: 200px;
+    height: 270px;
+    background: var(--cover-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.detail-cover__initial {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--cover-text);
+    line-height: 1;
+}
+
+.detail-cover__icon {
+    width: 28px;
+    height: 28px;
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.detail-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.detail-meta__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.detail-meta__item svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+}
+
+.detail-rating {
+    color: var(--rating-star);
+    letter-spacing: -1px;
+}
+
+.detail-rating strong {
+    letter-spacing: 0;
+    margin-left: 6px;
+    font-size: 1rem;
+}
+
+.detail-rating small {
+    color: var(--text-muted);
+    letter-spacing: 0;
+}
+
+.detail-section__heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.detail-annotation {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+}
+
+.detail-annotation p + p {
+    margin-top: 1rem;
+}
+
+.detail-no-annotation {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
 /* ── Utilities ─────────────────────────────────────────────────── */
 
 .print-only {
